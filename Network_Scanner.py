@@ -4,6 +4,8 @@ from scapy.layers.l2 import ARP
 from scapy.layers.l2 import Ether
 import scapy.all as scapy
 import optparse
+import subprocess
+import re
 
 
 def get_args():
@@ -21,16 +23,20 @@ def scan(ip):
 
     clients = []
     for element in answered_list:
-        client_dict = {"ip" : element[1].psrc, "mac" : element[1].hwsrc}
+        hx = subprocess.call(["nslookup", element[1].psrc])
+        print(hx)
+        hx = hx[31:-18]
+        print(hx)
+        client_dict = {"ip" : element[1].psrc, "mac" : element[1].hwsrc}#, "hn" : subprocess.call(["nslookup", element[1].psrc])}
         clients.append(client_dict)
     return clients
 
 
 def print_result(result_list):
-    print("IP\t\t\tMAC Address")
+    #print("IP\t\t\tMAC Address\t\t\tHostname")
     print("___________________________________________________")
-    for client in result_list:
-        print(client["ip"] + "\t\t" + client["mac"])
+    #for client in result_list:
+    #    print(client["ip"] + "\t\t" + client["mac"])# + "\t\t" + client["hn"])
 
 
 options = get_args()
